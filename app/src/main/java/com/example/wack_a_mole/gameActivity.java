@@ -2,6 +2,7 @@ package com.example.wack_a_mole;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.sql.Timestamp;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,12 +24,16 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private float[] orientation = new float[3];
     private float startingDeg;
     private boolean start = false;
-
+    private Timestamp t;
+    private long starttime;
+    private long endtime;
+    private long gameLength;
     private boolean foundMole = true;
     private float moleDeg;
     private int currentDeg;
 
-    private TextView deg, moleTxt;
+    private TextView deg, moleTxt, highScore;
+    private int scoreCounter = 0;
 
     private Sensor accelerometerSensor;
 
@@ -40,6 +45,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean search = true;
 
     private Vibrator v;
+    private float accX, accY, accZ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_game);
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
+        highScore = findViewById(R.id.highScore);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -75,35 +82,40 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     System.arraycopy(event.values, 0, acceleration, 0, 3);
+                    accX = event.values[0];
+                    accY = event.values[1];
+                    accZ = event.values[2];
                     break;
                 case Sensor.TYPE_MAGNETIC_FIELD:
                     System.arraycopy(event.values, 0, magneticField, 0, 3);
                     break;
             }
 
-        //boolean success = SensorManager.getRotationMatrix(rotationMatrix, null, acceleration, magneticField);
+            //boolean success = SensorManager.getRotationMatrix(rotationMatrix, null, acceleration, magneticField);
 
-        //if (success) {
-        float[] rotationVector = event.values;
+            //if (success) {
+            float[] rotationVector = event.values;
 
-        // Convert the rotation vector to a rotation matrix
-        float[] rotationMatrix = new float[9];
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            if(search) {
-                search(rotationVector, rotationMatrix);
-            } else {
-                whack(); // accelerometer-sensor
+            // Convert the rotation vector to a rotation matrix
+            float[] rotationMatrix = new float[9];
+            if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+                if(search) {
+                    search(rotationVector, rotationMatrix);
+                }
             }
-
-        }
+            if(!search) {
+                Log.d("whack", "jadå");
+                whack(accX, accY, accZ); // accelerometer-sensor
+            }
+            highScore.setText(String.valueOf(scoreCounter));
         }
 
         private float GetRandomDeg() {
             Random rand = new Random();
 
             Log.d("currentDeg:", String.valueOf(startingDeg));
-
-            int randomDeg = rand.nextInt(181) - 90 + (int)startingDeg;
+            //dont spawn mole on top of player current deg
+            int randomDeg = rand.nextInt(121) - 60 + (int)startingDeg;
             //int randomDeg = 225;
             if(randomDeg > 180) {
                 Log.d("beforeDeg: ", String.valueOf(randomDeg));
@@ -145,6 +157,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             float roll = (float) Math.toDegrees(orientation[2]);
             if(!start) {
                 startingDeg = azimuth;
+                starttime = System.currentTimeMillis();
                 start = true;
             }
             if(checkDeg()) {
@@ -171,12 +184,20 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         private void whack(float x, float y, float z) {
             if(checkPunch((int) x, (int) y,(int) z) && calcForces(x, y, z, 1.5F)) {
                 // && calcForces(x, y, z, 2)
+                scoreCounter++;
+                if(scoreCounter == 10) {
+                    endtime = System.currentTimeMillis();
+                    gameLength = endtime - starttime;
+                    float gameLengthSeconds = gameLength/1000;
+
+                    Log.d("test", String.valueOf(gameLength));
+                }
                 System.out.println("punch me");
                 search = true;
-                v.vibrate(100);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+                }
             }
-
-
         }
         private boolean checkPunch(int x, int y, int z) {
             // z > -7 && z < 7 && y > -3 && y < 5
