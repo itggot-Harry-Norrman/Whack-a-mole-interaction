@@ -7,7 +7,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -23,6 +26,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
 
     private boolean foundMole = true;
     private float moleDeg;
+    private int currentDeg;
+
     private TextView deg, moleTxt;
 
     private Sensor accelerometerSensor;
@@ -32,6 +37,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private Sensor rotationVectorSensor;
 
     private SensorManager sensorManager;
+    private boolean search = true;
+
+    private Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
     @Override
     protected void onResume() {
@@ -80,34 +89,15 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         // Convert the rotation vector to a rotation matrix
         float[] rotationMatrix = new float[9];
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            if(search) {
+                search(rotationVector, rotationMatrix);
+            } else {
+                whack();
+            }
 
-            SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
-
-            // Get the device's orientation from the rotation matrix
-            float[] orientation = new float[3];
-            SensorManager.getOrientation(rotationMatrix, orientation);
-
-            // The orientation array contains the device's orientation in radians
-            // orientation[0] = azimuth (yaw), orientation[1] = pitch, orientation[2] = roll
-
-                SensorManager.getOrientation(rotationMatrix, orientation);
-                float azimuth = (float) Math.toDegrees(orientation[0]);
-                float pitch = (float) Math.toDegrees(orientation[1]);
-                float roll = (float) Math.toDegrees(orientation[2]);
-                if(!start) {
-                    startingDeg = azimuth;
-                    start = true;
-                }
-                if(foundMole) {
-                    moleDeg = GetRandomDeg();
-                    moleTxt.setText(String.valueOf(moleDeg));
-                    foundMole = false;
-                }
-                deg.setText(String.valueOf((int)azimuth));
-                // Do something with the angle values here
-            //}
         }
         }
+
         private float GetRandomDeg() {
             Random rand = new Random();
 
@@ -126,5 +116,54 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             }
 
             return randomDeg;
+        }
+        private boolean checkDeg() {
+            if(moleDeg > 0 && currentDeg+10 > moleDeg && currentDeg - 10 < moleDeg) {
+                Log.d("found mole +", "jadå");
+                return true;
+            }
+            if(moleDeg < 0 && currentDeg +10 > moleDeg && currentDeg - 10 < moleDeg){
+                Log.d("found mole -", "jadå");
+                return true;
+            }
+            return false;
+        }
+        private void search(float[] rotationVector, float[] rotationMatrix) {
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
+
+            // Get the device's orientation from the rotation matrix
+            float[] orientation = new float[3];
+            SensorManager.getOrientation(rotationMatrix, orientation);
+
+            // The orientation array contains the device's orientation in radians
+            // orientation[0] = azimuth (yaw), orientation[1] = pitch, orientation[2] = roll
+
+            SensorManager.getOrientation(rotationMatrix, orientation);
+            float azimuth = (float) Math.toDegrees(orientation[0]);
+            currentDeg = (int)azimuth;
+            float pitch = (float) Math.toDegrees(orientation[1]);
+            float roll = (float) Math.toDegrees(orientation[2]);
+            if(!start) {
+                startingDeg = azimuth;
+                start = true;
+            }
+            if(checkDeg()) {
+                foundMole = true;
+            }
+            if(foundMole) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+                }
+                moleDeg = GetRandomDeg();
+                moleTxt.setText(String.valueOf(moleDeg));
+                search = false;
+                foundMole = false;
+            }
+            deg.setText(String.valueOf((int)azimuth));
+            // Do something with the angle values here
+            //}
+        }
+        private void whack() {
+            search = true;
         }
     };
