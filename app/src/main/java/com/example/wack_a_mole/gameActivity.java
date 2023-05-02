@@ -92,7 +92,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             if(search) {
                 search(rotationVector, rotationMatrix);
             } else {
-                whack();
+                whack(); // accelerometer-sensor
             }
 
         }
@@ -163,7 +163,35 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             // Do something with the angle values here
             //}
         }
-        private void whack() {
-            search = true;
+        /** x, y, z värden från
+         *  float x = sensorEvent.values[0];
+         *  float y = sensorEvent.values[1];
+         *  float z = sensorEvent.values[2];
+         *             */
+        private void whack(float x, float y, float z) {
+            if(checkPunch((int) x, (int) y,(int) z) && calcForces(x, y, z, 1.5F)) {
+                // && calcForces(x, y, z, 2)
+                System.out.println("punch me");
+                search = true;
+                v.vibrate(100);
+            }
+
+
         }
+        private boolean checkPunch(int x, int y, int z) {
+            // z > -7 && z < 7 && y > -3 && y < 5
+            return x > 15 && z > -7 && z < 7;
+        }
+
+    private boolean calcForces(float x, float y, float z, float threshold) {
+        float gX = x / SensorManager.GRAVITY_EARTH;
+        float gY = y / SensorManager.GRAVITY_EARTH;
+        float gZ = z / SensorManager.GRAVITY_EARTH;
+
+        // gForce will be close to 1 when there is no movement.
+        float gForce = (float)Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+        System.out.println(gForce);
+        System.out.println("x: "+x + "y: " + y + "z: " + z);
+        return gForce > threshold;
+    }
     };
