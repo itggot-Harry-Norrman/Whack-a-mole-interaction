@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -45,11 +46,18 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean search = true;
 
     private Vibrator v;
+    private MediaPlayer popOut;
+    private MediaPlayer coin;
+    private MediaPlayer bonk;
     private float accX, accY, accZ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        popOut = MediaPlayer.create(this, R.raw.popout);
+        bonk = MediaPlayer.create(this, R.raw.bonk);
+        coin = MediaPlayer.create(this, R.raw.coin);
         setContentView(R.layout.activity_game);
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
@@ -117,6 +125,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             //dont spawn mole on top of player current deg
             int randomDeg = rand.nextInt(121) - 60 + (int)startingDeg;
             //int randomDeg = 225;
+            if(randomDeg > currentDeg - 20 && randomDeg < currentDeg + 20) {
+                randomDeg = (int)GetRandomDeg(); // regenerate a new degree
+            }
             if(randomDeg > 180) {
                 Log.d("beforeDeg: ", String.valueOf(randomDeg));
                 randomDeg = -360 + randomDeg;
@@ -161,11 +172,12 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 start = true;
             }
             if(checkDeg()) {
+                popOut.start();
                 foundMole = true;
             }
             if(foundMole) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+                    v.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
                 }
                 moleDeg = GetRandomDeg();
                 moleTxt.setText(String.valueOf(moleDeg));
@@ -184,6 +196,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         private void whack(float x, float y, float z) {
             if(checkPunch((int) x, (int) y,(int) z) && calcForces(x, y, z, 1.5F)) {
                 // && calcForces(x, y, z, 2)
+                bonk.start();
                 scoreCounter++;
                 if(scoreCounter == 10) {
                     endtime = System.currentTimeMillis();
