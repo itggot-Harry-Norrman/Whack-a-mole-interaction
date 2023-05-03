@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +25,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        ImageView gifImageView = findViewById(R.id.gifImageView);
+        Glide.with(this)
+                .load(R.drawable.mole)
+                .into(gifImageView);
 
     }
 }
