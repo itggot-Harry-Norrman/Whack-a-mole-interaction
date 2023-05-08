@@ -14,7 +14,10 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.Random;
 
@@ -49,12 +52,14 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private MediaPlayer popOut;
     private MediaPlayer coin;
     private MediaPlayer bonk;
+    private ImageView moleView;
     private float accX, accY, accZ;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
         bonk = MediaPlayer.create(this, R.raw.bonk);
         coin = MediaPlayer.create(this, R.raw.coin);
@@ -170,9 +175,15 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 startingDeg = azimuth;
                 starttime = System.currentTimeMillis();
                 start = true;
+                //Glide.with(this)
+                //        .load(R.drawable.mole01)
+                //        .into(moleView);
             }
             if(checkDeg()) {
                 popOut.start();
+                //Glide.with(this)
+                //        .load(R.drawable.mole01)
+                //        .into(moleView);
                 foundMole = true;
             }
             if(foundMole) {
