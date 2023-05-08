@@ -119,7 +119,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
             if(!search) {
-                Log.d("whack", "jadå");
+                //Log.d("whack", "jadå");
                 whack(accX, accY, accZ); // accelerometer-sensor
             }
             highScore.setText(String.valueOf(scoreCounter));
@@ -141,7 +141,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 Log.d("random > 180: ", String.valueOf(randomDeg));
             } else if(randomDeg < -180) {
                 Log.d("beforeDeg: ", String.valueOf(randomDeg));
-                randomDeg = 360 -randomDeg;
+                randomDeg = 360 +randomDeg;
                 Log.d("end < -180: ", String.valueOf(randomDeg));
             }
 
@@ -149,11 +149,11 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         }
         private boolean checkDeg() {
             if(moleDeg > 0 && currentDeg+10 > moleDeg && currentDeg - 10 < moleDeg) {
-                Log.d("found mole +", "jadå");
+                //Log.d("found mole +", "jadå");
                 return true;
             }
             if(moleDeg < 0 && currentDeg +10 > moleDeg && currentDeg - 10 < moleDeg){
-                Log.d("found mole -", "jadå");
+                //Log.d("found mole -", "jadå");
                 return true;
             }
             return false;
