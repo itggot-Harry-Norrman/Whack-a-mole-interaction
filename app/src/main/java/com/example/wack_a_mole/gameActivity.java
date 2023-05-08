@@ -36,6 +36,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private float moleDeg;
     private int currentDeg;
 
+    private int lastMoleDeg;
+
     private TextView deg, moleTxt, highScore;
     private int scoreCounter = 0;
 
@@ -129,10 +131,10 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             Random rand = new Random();
 
             Log.d("currentDeg:", String.valueOf(startingDeg));
-            //dont spawn mole on top of player current deg
             int randomDeg = rand.nextInt(121) - 60 + (int)startingDeg;
-            //int randomDeg = 225;
-            if(randomDeg > currentDeg - 20 && randomDeg < currentDeg + 20) {
+
+            //dont spawn mole on top of player current deg
+            if(randomDeg > lastMoleDeg - 30 && randomDeg < lastMoleDeg + 30) {
                 randomDeg = (int)GetRandomDeg(); // regenerate a new degree
             }
             if(randomDeg > 180) {
@@ -144,16 +146,12 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 randomDeg = 360 +randomDeg;
                 Log.d("end < -180: ", String.valueOf(randomDeg));
             }
-
+            lastMoleDeg = randomDeg;
             return randomDeg;
         }
         private boolean checkDeg() {
-            if(moleDeg > 0 && currentDeg+10 > moleDeg && currentDeg - 10 < moleDeg) {
+            if(currentDeg+10 > moleDeg && currentDeg - 10 < moleDeg) {
                 //Log.d("found mole +", "jadå");
-                return true;
-            }
-            if(moleDeg < 0 && currentDeg +10 > moleDeg && currentDeg - 10 < moleDeg){
-                //Log.d("found mole -", "jadå");
                 return true;
             }
             return false;
@@ -175,6 +173,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             float roll = (float) Math.toDegrees(orientation[2]);
             if(!start) {
                 startingDeg = azimuth;
+                lastMoleDeg = (int) startingDeg;
                 starttime = System.currentTimeMillis();
                 start = true;
                 //Glide.with(this)
