@@ -29,6 +29,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private float startingDeg;
     private boolean start = false;
     private Timestamp t;
+    private long foundMoleTimestamp;
     private long starttime;
     private long endtime;
     private long gameLength;
@@ -195,6 +196,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 moleTxt.setText(String.valueOf(moleDeg));
                 search = false;
                 foundMole = false;
+                foundMoleTimestamp = System.currentTimeMillis();
             }
             deg.setText(String.valueOf((int)azimuth));
             // Do something with the angle values here
@@ -206,18 +208,17 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
          *  float z = sensorEvent.values[2];
          *             */
         private void whack(float x, float y, float z) {
-            if(checkPunch((int) x, (int) y,(int) z) && calcForces(x, y, z, 1.5F)) {
-                // && calcForces(x, y, z, 2)
+            if(calcForces(x, y, z, 4F)) {
+                // checkPunch((int) x, (int) y,(int) z) &&
                 bonk.start();
-                scoreCounter++;
-                if(scoreCounter == 10) {
-                    endtime = System.currentTimeMillis();
-                    gameLength = endtime - starttime;
-                    float gameLengthSeconds = gameLength/1000;
-
-                    Log.d("test", String.valueOf(gameLength));
+                float whackTime = System.currentTimeMillis() - foundMoleTimestamp;
+                if (whackTime > 1000) {
+                    scoreCounter = scoreCounter + 50;
+                } else {
+                    int point = (int) (1000 - whackTime);
+                    scoreCounter = scoreCounter + point;
                 }
-                System.out.println("punch me");
+
                 search = true;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
