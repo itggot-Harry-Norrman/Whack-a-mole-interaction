@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide(); //hides top-menu
 
         Button button1 = findViewById(R.id.button);
         button1.setOnClickListener(new View.OnClickListener() {
@@ -25,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        ImageView gifImageView = findViewById(R.id.gifImageView);
-        Glide.with(this)
-                .load(R.drawable.mole)
-                .into(gifImageView);
+        //ImageView gifImageView = findViewById(R.id.gifImageView);
+        //Glide.with(this)
+        //        .load(R.drawable.mole)
+        //        .into(gifImageView);
 
     }
 }

@@ -59,6 +59,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide(); //hides top-menu
+
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
         bonk = MediaPlayer.create(this, R.raw.bonk);
