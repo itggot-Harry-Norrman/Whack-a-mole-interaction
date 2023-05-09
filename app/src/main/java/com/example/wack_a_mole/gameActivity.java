@@ -3,7 +3,12 @@ package com.example.wack_a_mole;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.sql.Timestamp;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -14,7 +19,11 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -62,7 +71,10 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide(); //hides top-menu
+        //getSupportActionBar().hide(); //hides top-menu
+
+        starttime = System.currentTimeMillis();
+        gameLength = 5000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
@@ -97,6 +109,14 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        long currentTime = System.currentTimeMillis() - starttime;
+        if (currentTime >= gameLength) {
+            System.out.println("game over");
+            gameOver();
+            // do something
+           // Intent intent = new Intent(gameActivity.this, MainActivity.class);
+            //startActivity(intent);
+        }
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     System.arraycopy(event.values, 0, acceleration, 0, 3);
@@ -128,7 +148,39 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             highScore.setText(String.valueOf(scoreCounter));
         }
 
-        private float GetRandomDeg() {
+    private void gameOver() {
+        // Suppose 'activity' is an instance of your current activity
+        onPause();
+        // highscore smth?
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(gameActivity.this)
+                        .setTitle("Game Over!")
+                        .setMessage("Din poäng: " + scoreCounter + "\n" + "Vill du starta om spelet?")
+                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                restart();
+                                onResume();
+                            }
+                        })
+                        .setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(gameActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    private void restart() {
+        starttime = System.currentTimeMillis();
+        scoreCounter = 0;
+    }
+
+    private float GetRandomDeg() {
             Random rand = new Random();
 
             Log.d("currentDeg:", String.valueOf(startingDeg));
@@ -139,13 +191,13 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 randomDeg = (int)GetRandomDeg(); // regenerate a new degree
             }
             if(randomDeg > 180) {
-                Log.d("beforeDeg: ", String.valueOf(randomDeg));
+                //Log.d("beforeDeg: ", String.valueOf(randomDeg));
                 randomDeg = -360 + randomDeg;
-                Log.d("random > 180: ", String.valueOf(randomDeg));
+               // Log.d("random > 180: ", String.valueOf(randomDeg));
             } else if(randomDeg < -180) {
-                Log.d("beforeDeg: ", String.valueOf(randomDeg));
+               // Log.d("beforeDeg: ", String.valueOf(randomDeg));
                 randomDeg = 360 +randomDeg;
-                Log.d("end < -180: ", String.valueOf(randomDeg));
+                //Log.d("end < -180: ", String.valueOf(randomDeg));
             }
             lastMoleDeg = randomDeg;
             return randomDeg;
@@ -237,8 +289,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
 
         // gForce will be close to 1 when there is no movement.
         float gForce = (float)Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-        System.out.println(gForce);
-        System.out.println("x: "+x + "y: " + y + "z: " + z);
+       //System.out.println(gForce);
+        //System.out.println("x: "+x + "y: " + y + "z: " + z);
         return gForce > threshold;
     }
     };
