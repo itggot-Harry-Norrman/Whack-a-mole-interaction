@@ -25,10 +25,22 @@
         android:layout_height="211dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.83"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.56"
+        app:layout_constraintVertical_bias="0.555"
         app:srcCompat="@drawable/molepixel" />
+
+    <ImageView
+        android:id="@+id/gifClouds"
+        android:layout_width="491dp"
+        android:layout_height="438dp"
+        android:gravity="top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.237"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cloudgif" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -71,5 +83,17 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         app:layout_constraintVertical_bias="0.96"
         app:srcCompat="@drawable/scoreboard" />
+
+    <ImageView
+        android:id="@+id/moleGif"
+        android:layout_width="119dp"
+        android:layout_height="123dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintHorizontal_bias="0.584"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.583"
+        app:srcCompat="@drawable/molegif" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

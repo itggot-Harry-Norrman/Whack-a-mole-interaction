@@ -27,10 +27,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //ImageView gifImageView = findViewById(R.id.gifImageView);
-        //Glide.with(this)
-        //        .load(R.drawable.mole)
-        //        .into(gifImageView);
+
+        ImageView gifImageView = findViewById(R.id.gifClouds);
+        Glide.with(this)
+                .load(R.drawable.cloudgif)
+                .into(gifImageView);
+
+        ImageView gifImageView2 = findViewById(R.id.moleGif);
+        Glide.with(this)
+                .load(R.drawable.molegif)
+                .into(gifImageView2);
 
     }
 }
