@@ -64,8 +64,14 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private MediaPlayer popOut;
     private MediaPlayer coin;
     private MediaPlayer bonk;
+
+    private MediaPlayer siren;
     private ImageView moleView;
     private float accX, accY, accZ;
+
+    private boolean outOfBounds = false;
+    private int upperBound;
+    private int lowerBound;
 
 
     @Override
@@ -80,6 +86,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         popOut = MediaPlayer.create(this, R.raw.popout);
         bonk = MediaPlayer.create(this, R.raw.bonk);
         coin = MediaPlayer.create(this, R.raw.coin);
+        siren = MediaPlayer.create(this, R.raw.siren);
         setContentView(R.layout.activity_game);
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
@@ -141,6 +148,13 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                     search(rotationVector, rotationMatrix);
                 }
             }
+
+            if(isOutOfBounds() && !siren.isPlaying()){
+                siren.start();
+            } else if(siren.isPlaying()){
+                siren.pause();
+            }
+
             if(!search) {
                 //Log.d("whack", "jadå");
                 whack(accX, accY, accZ); // accelerometer-sensor
@@ -231,6 +245,14 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 startingDeg = azimuth;
                 lastMoleDeg = (int) startingDeg;
                 starttime = System.currentTimeMillis();
+                lowerBound = (int) startingDeg-60;
+                upperBound = (int) startingDeg+60;
+                if(upperBound > 180) {
+                    upperBound = -360 + upperBound;
+                }
+                if(lowerBound < -180) {
+                    lowerBound = 360 + lowerBound;
+                }
                 start = true;
                 //Glide.with(this)
                 //        .load(R.drawable.mole01)
@@ -295,5 +317,11 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
        //System.out.println(gForce);
         //System.out.println("x: "+x + "y: " + y + "z: " + z);
         return gForce > threshold;
+    }
+    private boolean isOutOfBounds(){
+        if(currentDeg<lowerBound && currentDeg>upperBound){
+            return true;
+        }
+        return false;
     }
     };
