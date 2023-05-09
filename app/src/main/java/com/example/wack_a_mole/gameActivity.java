@@ -207,6 +207,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 //Log.d("found mole +", "jadå");
                 return true;
             }
+            if((moleDeg > 170 || moleDeg < -170) && (currentDeg > 170 || currentDeg < -170)) {
+                return true;
+            }
             return false;
         }
         private void search(float[] rotationVector, float[] rotationMatrix) {
