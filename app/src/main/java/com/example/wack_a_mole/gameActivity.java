@@ -45,33 +45,26 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean foundMole = true;
     private float moleDeg;
     private int currentDeg;
-
     private int lastMoleDeg;
-
     private TextView deg, moleTxt, highScore;
     private int scoreCounter = 0;
-
-    private Sensor accelerometerSensor;
-
-    private Sensor magnetometerSensor;
-
-    private Sensor rotationVectorSensor;
+    private Sensor accelerometerSensor, magnetometerSensor, rotationVectorSensor;
 
     private SensorManager sensorManager;
     private boolean search = true;
 
     private Vibrator v;
-    private MediaPlayer popOut;
-    private MediaPlayer coin;
-    private MediaPlayer bonk;
+    private MediaPlayer siren,bonk,coin,popOut;
 
-    private MediaPlayer siren;
+    private MediaPlayer warning2,pop2,hit2;
     private ImageView moleView;
     private float accX, accY, accZ;
 
     private boolean outOfBounds = false;
     private int upperBound;
     private int lowerBound;
+
+    private TimerThread timerThread;
 
 
     @Override
@@ -80,13 +73,16 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         //getSupportActionBar().hide(); //hides top-menu
 
         starttime = System.currentTimeMillis();
-        gameLength = 5000;
+        gameLength = 50000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
         bonk = MediaPlayer.create(this, R.raw.bonk);
         coin = MediaPlayer.create(this, R.raw.coin);
         siren = MediaPlayer.create(this, R.raw.siren);
+        hit2 = MediaPlayer.create(this, R.raw.hit2);
+        pop2 = MediaPlayer.create(this, R.raw.pop2);
+        warning2 = MediaPlayer.create(this, R.raw.warning2);
         setContentView(R.layout.activity_game);
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
@@ -150,13 +146,14 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             }
 
             if(isOutOfBounds() && !siren.isPlaying()){
-                siren.start();
+                //siren.start();
+                warning2.start();
             } else if(siren.isPlaying()){
-                siren.pause();
+                //siren.pause();
+                warning2.pause();
             }
 
             if(!search) {
-                //Log.d("whack", "jadå");
                 whack(accX, accY, accZ); // accelerometer-sensor
             }
             highScore.setText(String.valueOf(scoreCounter));
@@ -258,8 +255,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 //        .load(R.drawable.mole01)
                 //        .into(moleView);
             }
-            if(checkDeg()) {
-                popOut.start();
+            if(checkDeg() && timerThread.getTimerValue()<=0) {
+                //popOut.start();
+                pop2.start();
                 //Glide.with(this)
                 //        .load(R.drawable.mole01)
                 //        .into(moleView);
@@ -286,8 +284,11 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
          *             */
         private void whack(float x, float y, float z) {
             if(calcForces(x, y, z, 4F)) {
-                // checkPunch((int) x, (int) y,(int) z) &&
-                bonk.start();
+                //bonk.start();
+                hit2.start();
+                if(pop2.isPlaying()){
+                    pop2.pause();
+                }
                 float whackTime = System.currentTimeMillis() - foundMoleTimestamp;
                 if (whackTime > 1000) {
                     scoreCounter = scoreCounter + 50;
@@ -301,6 +302,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                     v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
                 }
             }
+            timerThread = new TimerThread();
+            timerThread.start();
         }
         private boolean checkPunch(int x, int y, int z) {
             // z > -7 && z < 7 && y > -3 && y < 5
@@ -324,4 +327,29 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         }
         return false;
     }
-    };
+    private static class TimerThread extends Thread {
+
+        Random rand = new Random();
+        private int timerValue;
+
+        public TimerThread() {
+            this.timerValue = 1000+rand.nextInt(1000);
+        }
+
+        public int getTimerValue() {
+            return timerValue;
+        }
+
+        public void run() {
+            while (timerValue > 0) {
+                try {
+                    Thread.sleep(100); //checks every 100 milliseconds (deca second)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                timerValue-=100;
+            }
+        }
+    }
+    }
+
