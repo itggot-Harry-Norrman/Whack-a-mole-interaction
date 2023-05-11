@@ -58,4 +58,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/highScore"
         app:srcCompat="@drawable/molepixel" />
+
+    <ImageView
+        android:id="@+id/start_popup"
+        android:layout_width="353dp"
+        android:layout_height="659dp"
+        android:background="@drawable/tutorial"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

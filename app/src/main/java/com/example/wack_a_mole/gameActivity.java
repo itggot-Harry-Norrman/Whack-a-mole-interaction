@@ -28,6 +28,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class gameActivity extends AppCompatActivity implements SensorEventListener{
@@ -63,6 +65,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean outOfBounds = false;
     private int upperBound;
     private int lowerBound;
+    private boolean tutorialMode = true;
 
     private TimerThread timerThread;
 
@@ -73,7 +76,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         //getSupportActionBar().hide(); //hides top-menu
 
         starttime = System.currentTimeMillis();
-        gameLength = 50000;
+        gameLength = 30000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
@@ -92,7 +95,15 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        setTutorialVisibility(View.VISIBLE);
     }
+
+    private void setTutorialVisibility(int mode) {
+        ImageView tutorial = (ImageView)findViewById(R.id.start_popup);
+        tutorial.setVisibility((mode));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -167,7 +178,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void run() {
                 new AlertDialog.Builder(gameActivity.this)
-                        .setTitle("Game Over!")
+                        .setTitle("Tiden är ute!")
                         .setMessage("Din poäng: " + scoreCounter + "\n" + "Vill du starta om spelet?")
                         .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -223,61 +234,69 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             }
             return false;
         }
-        private void search(float[] rotationVector, float[] rotationMatrix) {
-            SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
+    private void search(float[] rotationVector, float[] rotationMatrix) {
+        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector);
 
-            // Get the device's orientation from the rotation matrix
-            float[] orientation = new float[3];
-            SensorManager.getOrientation(rotationMatrix, orientation);
+        // Get the device's orientation from the rotation matrix
+        float[] orientation = new float[3];
+        SensorManager.getOrientation(rotationMatrix, orientation);
 
-            // The orientation array contains the device's orientation in radians
-            // orientation[0] = azimuth (yaw), orientation[1] = pitch, orientation[2] = roll
+        // The orientation array contains the device's orientation in radians
+        // orientation[0] = azimuth (yaw), orientation[1] = pitch, orientation[2] = roll
 
-            SensorManager.getOrientation(rotationMatrix, orientation);
-            float azimuth = (float) Math.toDegrees(orientation[0]);
-            currentDeg = (int)azimuth;
-            float pitch = (float) Math.toDegrees(orientation[1]);
-            float roll = (float) Math.toDegrees(orientation[2]);
-            if(!start) {
-                startingDeg = azimuth;
-                lastMoleDeg = (int) startingDeg;
-                starttime = System.currentTimeMillis();
-                lowerBound = (int) startingDeg-60;
-                upperBound = (int) startingDeg+60;
-                if(upperBound > 180) {
-                    upperBound = -360 + upperBound;
-                }
-                if(lowerBound < -180) {
-                    lowerBound = 360 + lowerBound;
-                }
-                start = true;
-                //Glide.with(this)
-                //        .load(R.drawable.mole01)
-                //        .into(moleView);
+        SensorManager.getOrientation(rotationMatrix, orientation);
+        float azimuth = (float) Math.toDegrees(orientation[0]);
+        currentDeg = (int)azimuth;
+        float pitch = (float) Math.toDegrees(orientation[1]);
+        float roll = (float) Math.toDegrees(orientation[2]);
+        if(!start) {
+            startingDeg = azimuth;
+            lastMoleDeg = (int) startingDeg;
+            starttime = System.currentTimeMillis();
+            lowerBound = (int) startingDeg-60;
+            upperBound = (int) startingDeg+60;
+            if(upperBound > 180) {
+                upperBound = -360 + upperBound;
             }
-            if(checkDeg() && timerThread.getTimerValue()<=0) {
-                //popOut.start();
-                pop2.start();
-                //Glide.with(this)
-                //        .load(R.drawable.mole01)
-                //        .into(moleView);
-                foundMole = true;
+            if(lowerBound < -180) {
+                lowerBound = 360 + lowerBound;
             }
-            if(foundMole) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-                }
-                moleDeg = GetRandomDeg();
-                moleTxt.setText(String.valueOf(moleDeg));
-                search = false;
-                foundMole = false;
-                foundMoleTimestamp = System.currentTimeMillis();
-            }
-            deg.setText(String.valueOf((int)azimuth));
-            // Do something with the angle values here
-            //}
+            start = true;
+            //Glide.with(this)
+            //        .load(R.drawable.mole01)
+            //        .into(moleView);
         }
-        /** x, y, z värden från
+        if(checkDeg() && timerThread.getTimerValue()<=0) {
+            //popOut.start();
+            pop2.start();
+            //Glide.with(this)
+            //        .load(R.drawable.mole01)
+            //        .into(moleView);
+            foundMole = true;
+        }
+        if(foundMole) {
+            if (!tutorialMode) {
+                doVibration(150);
+            }
+
+            moleDeg = GetRandomDeg();
+            moleTxt.setText(String.valueOf(moleDeg));
+            search = false;
+            foundMole = false;
+            foundMoleTimestamp = System.currentTimeMillis();
+        }
+        deg.setText(String.valueOf((int)azimuth));
+        // Do something with the angle values here
+        //}
+    }
+
+    private void doVibration(int time) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+    }
+
+    /** x, y, z värden från
          *  float x = sensorEvent.values[0];
          *  float y = sensorEvent.values[1];
          *  float z = sensorEvent.values[2];
@@ -289,6 +308,18 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 if(pop2.isPlaying()){
                     pop2.pause();
                 }
+
+                // check if the tutorial popup is visible
+                // then set it to invisible and return, update starttime
+                if (tutorialMode) {
+                    setTutorialVisibility(View.INVISIBLE);
+                    starttime = System.currentTimeMillis();
+                    doVibration(300);
+                    search = true;
+                    tutorialMode = false;
+                    return;
+                }
+
                 float whackTime = System.currentTimeMillis() - foundMoleTimestamp;
                 if (whackTime > 1000) {
                     scoreCounter = scoreCounter + 50;
@@ -298,9 +329,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 search = true;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
-                }
+                doVibration(300);
             }
             timerThread = new TimerThread();
             timerThread.start();
