@@ -73,7 +73,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getSupportActionBar().hide(); //hides top-menu
+        getSupportActionBar().hide(); //hides top-menu
 
         starttime = System.currentTimeMillis();
         gameLength = 30000;
