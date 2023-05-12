@@ -225,7 +225,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             return randomDeg;
         }
         private boolean checkDeg() {
-            if(currentDeg+10 > moleDeg && currentDeg - 10 < moleDeg) {
+            if(currentDeg < moleDeg+10 && currentDeg > moleDeg - 10) {
                 //Log.d("found mole +", "jadå");
                 return true;
             }
