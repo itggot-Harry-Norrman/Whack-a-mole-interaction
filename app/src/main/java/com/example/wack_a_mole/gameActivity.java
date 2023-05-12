@@ -261,6 +261,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             if(lowerBound < -180) {
                 lowerBound = 360 + lowerBound;
             }
+            Log.d("startingdeg",String.valueOf(startingDeg));
+            Log.d("uooerBound", String.valueOf(upperBound));
+            Log.d("lowerBound", String.valueOf(lowerBound));
             start = true;
             //Glide.with(this)
             //        .load(R.drawable.mole01)
@@ -351,9 +354,12 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         return gForce > threshold;
     }
     private boolean isOutOfBounds(){
-        if(currentDeg<lowerBound && currentDeg>upperBound){
+
+        if(currentDeg<lowerBound || currentDeg>upperBound){
+            //Log.d("outOfBoundsCalled","out");
             return true;
         }
+        //Log.d("outOfBoundsCalled","in");
         return false;
     }
     private static class TimerThread extends Thread {
