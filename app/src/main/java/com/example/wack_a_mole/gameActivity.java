@@ -68,6 +68,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean tutorialMode = true;
 
     private TimerThread timerThread;
+    private OOBThread oobThread;
+    private boolean oob,oobTimerStarted;
 
 
     @Override
@@ -95,6 +97,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        oob = false;
+        oobTimerStarted = false;
 
         setTutorialVisibility(View.VISIBLE);
     }
@@ -156,12 +160,24 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
 
-            if(isOutOfBounds() && !siren.isPlaying()){
-                //siren.start();
-                warning2.start();
-            } else if(siren.isPlaying()){
+            if(isOutOfBounds() && !oob){
+                oob=true;
+                oobThread = new OOBThread();
+                oobThread.start();
+                oobTimerStarted = true;
+
+            } else if(isOutOfBounds() && oobTimerStarted){
+                if(oobTimerStarted && oobThread.getTimerValue()<=0){
+                    //siren.start();
+                    warning2.start();
+                }
+            } else if(!isOutOfBounds()){
                 //siren.pause();
-                warning2.pause();
+                if(warning2.isPlaying()){
+                    warning2.pause();
+                }
+                oob=false;
+                oobTimerStarted = false;
             }
 
             if(!search) {
@@ -369,6 +385,28 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
 
         public TimerThread() {
             this.timerValue = 1000+rand.nextInt(1000);
+        }
+
+        public int getTimerValue() {
+            return timerValue;
+        }
+
+        public void run() {
+            while (timerValue > 0) {
+                try {
+                    Thread.sleep(100); //checks every 100 milliseconds (deca second)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                timerValue-=100;
+            }
+        }
+    }
+
+    private static class OOBThread extends Thread { //OutOfBounds thread
+        private int timerValue;
+        public OOBThread() {
+            this.timerValue = 500;
         }
 
         public int getTimerValue() {
