@@ -101,6 +101,13 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         oobTimerStarted = false;
 
         setTutorialVisibility(View.VISIBLE);
+
+        // vet low key inte om detta funkar pga kunde ej testa med emulatorn
+        ImageView gifImageView2 = findViewById(R.id.molev);
+        Glide.with(this)
+                .load(R.drawable.molebig)
+                .into(gifImageView2);
+
     }
 
     private void setTutorialVisibility(int mode) {

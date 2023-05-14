@@ -5,7 +5,35 @@
     android:id="@+id/mo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/molebg"
     tools:context=".gameActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="683dp"
+        android:layout_height="560dp"
+        android:gravity="bottom|center_horizontal"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/dirt" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="538dp"
+        android:layout_height="417dp"
+        android:layout_marginEnd="271dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/grass2" />
 
     <TextView
         android:id="@+id/deg"
@@ -49,15 +77,14 @@
 
     <ImageView
         android:id="@+id/molev"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="105dp"
-        android:layout_marginTop="107dp"
-        android:layout_marginEnd="105dp"
+        android:layout_width="175dp"
+        android:layout_height="211dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/highScore"
-        app:srcCompat="@drawable/molepixel" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.621"
+        app:srcCompat="@drawable/molebig" />
 
     <ImageView
         android:id="@+id/start_popup"
