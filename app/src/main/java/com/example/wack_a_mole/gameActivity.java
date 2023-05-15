@@ -107,7 +107,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         Glide.with(this)
                 .load(R.drawable.molebig)
                 .into(gifImageView2);
-
+        gifImageView2.setVisibility(View.INVISIBLE);
+        
     }
 
     private void setTutorialVisibility(int mode) {
@@ -221,6 +222,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void restart() {
+        ImageView gifImageView2 = findViewById(R.id.molev);
+        gifImageView2.setVisibility(View.INVISIBLE);
         starttime = System.currentTimeMillis();
         scoreCounter = 0;
     }
@@ -304,7 +307,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             if (!tutorialMode) {
                 doVibration(150);
             }
-
+            ImageView gifImageView2 = findViewById(R.id.molev);
+            gifImageView2.setVisibility(View.VISIBLE);
             moleDeg = GetRandomDeg();
             moleTxt.setText(String.valueOf(moleDeg));
             search = false;
@@ -334,6 +338,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 if(pop2.isPlaying()){
                     pop2.pause();
                 }
+
+                ImageView gifImageView2 = findViewById(R.id.molev);
+                gifImageView2.setVisibility(View.INVISIBLE);
 
                 // check if the tutorial popup is visible
                 // then set it to invisible and return, update starttime
