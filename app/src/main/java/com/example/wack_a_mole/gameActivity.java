@@ -57,9 +57,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean search = true;
 
     private Vibrator v;
-    private MediaPlayer siren,bonk,coin,popOut;
-
-    private MediaPlayer warning2,pop2,hit2;
+    private MediaPlayer siren,bonk,coin,popOut, warning2, pop2, hit2, leave, pop3, win;
     private ImageView moleView;
     private float accX, accY, accZ;
 
@@ -79,7 +77,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide(); //hides top-menu
 
-        starttime = System.currentTimeMillis();
+        //starttime = System.currentTimeMillis();
         gameLength = 30000;
 
         moleView = findViewById(R.id.molev);
@@ -90,6 +88,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         hit2 = MediaPlayer.create(this, R.raw.hit2);
         pop2 = MediaPlayer.create(this, R.raw.pop2);
         warning2 = MediaPlayer.create(this, R.raw.warning2);
+        leave = MediaPlayer.create(this, R.raw.leave);
+        pop3 = MediaPlayer.create(this, R.raw.pop3);
+        win = MediaPlayer.create(this, R.raw.win);
         setContentView(R.layout.activity_game);
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
@@ -138,7 +139,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         long currentTime = System.currentTimeMillis() - starttime;
-        if (currentTime >= gameLength) {
+        if (currentTime >= gameLength && !tutorialMode) {
             System.out.println("game over");
             gameOver();
             // do something
@@ -203,6 +204,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                win.start();
                 new AlertDialog.Builder(gameActivity.this)
                         .setTitle("Tiden är ute!")
                         .setMessage("Din poäng: " + scoreCounter + "\n" + "Vill du starta om spelet?")
@@ -299,7 +301,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         }
         if(checkDeg() && timerThread.getTimerValue()<=0) {
             //popOut.start();
-            pop2.start();
+            //pop2.start();
+            pop3.start();
             //Glide.with(this)
             //        .load(R.drawable.mole01)
             //        .into(moleView);
@@ -338,13 +341,15 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             if(System.currentTimeMillis()>=foundMoleTimestamp+2000 && !tutorialMode){
                 gifImageView2.setVisibility(View.INVISIBLE);
                 search = true;
+                leave.start();
                 return;
             }
             if(calcForces(x, y, z, 4F)) {
                 //bonk.start();
                 hit2.start();
-                if(pop2.isPlaying()){
-                    pop2.pause();
+                if(pop3.isPlaying()){
+                    pop3.pause();
+                    pop3.seekTo(0);
                 }
 
 
