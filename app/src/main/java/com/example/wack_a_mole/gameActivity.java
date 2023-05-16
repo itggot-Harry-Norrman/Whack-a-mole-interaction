@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Timer;
 
 public class gameActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -68,7 +69,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private boolean tutorialMode = true;
 
     private TimerThread timerThread;
-    private OOBThread oobThread;
+    private TimerThread oobThread;
+    private TimerThread moleThread;
     private boolean oob,oobTimerStarted;
 
 
@@ -170,7 +172,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
 
             if(isOutOfBounds() && !oob){
                 oob=true;
-                oobThread = new OOBThread();
+                oobThread = new TimerThread(false, 1000);
                 oobThread.start();
                 oobTimerStarted = true;
 
@@ -332,6 +334,12 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
          *  float z = sensorEvent.values[2];
          *             */
         private void whack(float x, float y, float z) {
+            ImageView gifImageView2 = findViewById(R.id.molev);
+            if(System.currentTimeMillis()>=foundMoleTimestamp+2000 && !tutorialMode){
+                gifImageView2.setVisibility(View.INVISIBLE);
+                search = true;
+                return;
+            }
             if(calcForces(x, y, z, 4F)) {
                 //bonk.start();
                 hit2.start();
@@ -339,7 +347,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                     pop2.pause();
                 }
 
-                ImageView gifImageView2 = findViewById(R.id.molev);
+
                 gifImageView2.setVisibility(View.INVISIBLE);
 
                 // check if the tutorial popup is visible
@@ -364,7 +372,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 search = true;
                 doVibration(300);
             }
-            timerThread = new TimerThread();
+            timerThread = new TimerThread(true,0);
             timerThread.start();
         }
         private boolean checkPunch(int x, int y, int z) {
@@ -397,30 +405,12 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         Random rand = new Random();
         private int timerValue;
 
-        public TimerThread() {
-            this.timerValue = 1000+rand.nextInt(1000);
-        }
-
-        public int getTimerValue() {
-            return timerValue;
-        }
-
-        public void run() {
-            while (timerValue > 0) {
-                try {
-                    Thread.sleep(100); //checks every 100 milliseconds (deca second)
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                timerValue-=100;
+        public TimerThread(boolean isRandom, int time) {
+            if (isRandom){
+                this.timerValue = 1000+rand.nextInt(1000);
+            } else {
+                this.timerValue = time;
             }
-        }
-    }
-
-    private static class OOBThread extends Thread { //OutOfBounds thread
-        private int timerValue;
-        public OOBThread() {
-            this.timerValue = 500;
         }
 
         public int getTimerValue() {
