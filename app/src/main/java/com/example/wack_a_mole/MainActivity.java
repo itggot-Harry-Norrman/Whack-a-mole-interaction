@@ -32,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
                 .load(R.drawable.molebig)
                 .into(gifImageView);
 
+        ImageView gifImageView3 = findViewById(R.id.imageView5);
+        Glide.with(this)
+                .load(R.drawable.cloudstrimmed)
+                .into(gifImageView3);
+
     }
 
 }
