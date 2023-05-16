@@ -27,6 +27,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ImageButton button2 = findViewById(R.id.scoreboardbutton);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, scoreboardActivity.class);
+                startActivity(intent);
+            }
+        });
         ImageView gifImageView = findViewById(R.id.imageView2);
         Glide.with(this)
                 .load(R.drawable.molebig)
