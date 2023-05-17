@@ -182,7 +182,9 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             } else if(isOutOfBounds() && oobTimerStarted){
                 if(oobTimerStarted && oobThread.getTimerValue()<=0){
                     //siren.start();
-                    warning2.start();
+                    if(abMode){
+                        warning2.start();
+                    }
                 }
             } else if(!isOutOfBounds()){
                 //siren.pause();
@@ -400,13 +402,24 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         //System.out.println("x: "+x + "y: " + y + "z: " + z);
         return gForce > threshold;
     }
-    private boolean isOutOfBounds(){
 
-        if(currentDeg<lowerBound || currentDeg>upperBound){
-            //Log.d("outOfBoundsCalled","out");
-            return true;
+    private boolean isOutOfBounds() {
+        if (startingDeg > 120 || startingDeg < -120) {
+            if (startingDeg > 120){
+                if(currentDeg > lowerBound && currentDeg < upperBound) {
+                    return false;
+                }
+            }
+            if(startingDeg < -120) {
+                if(currentDeg > upperBound && currentDeg < lowerBound) {
+                    return false;
+                }
+            }
+            if (currentDeg < lowerBound || currentDeg < upperBound) {
+                return true;
+            }
+            return false;
         }
-        //Log.d("outOfBoundsCalled","in");
         return false;
     }
     private static class TimerThread extends Thread {

@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button buttonAB = findViewById(R.id.ab_button);
+        //buttonAB.setVisibility(View.INVISIBLE);
 
 
         buttonAB.setOnClickListener(new View.OnClickListener() {
