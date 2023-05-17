@@ -70,13 +70,15 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private TimerThread oobThread;
     private TimerThread moleThread;
     private boolean oob,oobTimerStarted;
-
-
+    public boolean abMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide(); //hides top-menu
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            abMode = extras.getBoolean("mode");
+        }
         //starttime = System.currentTimeMillis();
         gameLength = 30000;
 
@@ -299,14 +301,16 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             //        .load(R.drawable.mole01)
             //        .into(moleView);
         }
-        if(checkDeg() && timerThread.getTimerValue()<=0) {
-            //popOut.start();
-            //pop2.start();
-            pop3.start();
-            //Glide.with(this)
-            //        .load(R.drawable.mole01)
-            //        .into(moleView);
-            foundMole = true;
+        if(timerThread != null){
+            if(checkDeg() && timerThread.getTimerValue()<=0) {
+                //popOut.start();
+                //pop2.start();
+                pop3.start();
+                //Glide.with(this)
+                //        .load(R.drawable.mole01)
+                //        .into(moleView);
+                foundMole = true;
+            }
         }
         if(foundMole) {
             if (!tutorialMode) {

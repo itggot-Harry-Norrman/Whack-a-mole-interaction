@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean abMode = true; //true = A, B = false
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, gameActivity.class);
+                intent.putExtra("mode",abMode);
                 startActivity(intent);
             }
         });
@@ -35,6 +37,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button buttonAB = findViewById(R.id.ab_button);
+
+
+        buttonAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (abMode){
+                    abMode = false;
+                    buttonAB.setText("MODE B");
+                } else{
+                    abMode = true;
+                    buttonAB.setText("MODE A");
+                }
+            }
+        });
+
+
         ImageView gifImageView = findViewById(R.id.imageView2);
         Glide.with(this)
                 .load(R.drawable.molebig)
