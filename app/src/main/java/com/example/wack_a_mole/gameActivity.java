@@ -49,7 +49,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private float moleDeg;
     private int currentDeg;
     private int lastMoleDeg;
-    private TextView deg, moleTxt, highScore;
+    private TextView deg, moleTxt, highScore, timeView;
     private int scoreCounter = 0;
     private Sensor accelerometerSensor, magnetometerSensor, rotationVectorSensor;
 
@@ -97,6 +97,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
         highScore = findViewById(R.id.highScore);
+        timeView = findViewById(R.id.timer);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -141,6 +142,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         long currentTime = System.currentTimeMillis() - starttime;
+        timeView.setText(String.valueOf((float)(gameLength - (int)currentTime)/1000));
         if (currentTime >= gameLength && !tutorialMode) {
             System.out.println("game over");
             gameOver();
