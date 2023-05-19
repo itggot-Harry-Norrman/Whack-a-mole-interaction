@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,10 +19,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -80,7 +84,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             abMode = extras.getBoolean("mode");
         }
         //starttime = System.currentTimeMillis();
-        gameLength = 30000;
+        gameLength = 5000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
@@ -142,7 +146,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         long currentTime = System.currentTimeMillis() - starttime;
-        timeView.setText(String.valueOf((float)(gameLength - (int)currentTime)/1000));
+        timeView.setText(String.valueOf((int)(gameLength - (int)currentTime)/1000));
         if (currentTime >= gameLength && !tutorialMode) {
             System.out.println("game over");
             gameOver();
@@ -204,31 +208,77 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         }
 
     private void gameOver() {
-        // Suppose 'activity' is an instance of your current activity
         onPause();
-        // highscore smth?
+        EditText inputField = new EditText(this);
+        inputField.setHint("ABC");
+        inputField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence text, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int i, int i1, int i2) {
+                if (text.length() != 3) {
+                    inputField.setError("Name must be 3 letters");
+                } else {
+                    inputField.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 win.start();
-                new AlertDialog.Builder(gameActivity.this)
-                        .setTitle("Tiden är ute!")
-                        .setMessage("Din poäng: " + scoreCounter + "\n" + "Vill du starta om spelet?")
-                        .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(gameActivity.this);
+                builder.setTitle("Time is up!")
+                        .setMessage("Your score: " + scoreCounter + "\n" + "Save your score!")
+                        .setView(inputField)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                restart();
-                                onResume();
+                                addScore(inputField.getText().toString(), scoreCounter);
+                                Intent intent = new Intent(gameActivity.this, scoreboardActivity.class);
+                                startActivity(intent);
+                                //restart();
+                                //onResume();
                             }
                         })
-                        .setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(gameActivity.this, MainActivity.class);
-                                startActivity(intent);
+                                AlertDialog.Builder builder2 = new AlertDialog.Builder(gameActivity.this);
+                                builder2.setMessage("Do You want to play again?")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                restart();
+                                                onResume();
+                                            }
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(gameActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                .show();
                             }
                         })
                         .show();
             }
         });
+    }
+
+    private void addScore(String name, int score) {
+        SharedPreferences prefs = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
+       // TextView scoreboard = findViewById(R.id.scoreBoard);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(name, Integer.toString(score));
+        editor.apply();
+
     }
 
     private void restart() {

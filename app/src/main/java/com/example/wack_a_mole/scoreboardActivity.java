@@ -27,6 +27,8 @@ public class scoreboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide(); //hides top-menu
+
         setContentView(R.layout.activity_scoreboard);
         prefs = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
         scoreboard = findViewById(R.id.scoreBoard);
@@ -63,7 +65,9 @@ public class scoreboardActivity extends AppCompatActivity {
                 i++;
                 String key = entry.getKey();
                 key = key.toUpperCase();
-
+                if(key.length() > 3) {
+                    key = key.substring(0,3);
+                }
                 Object value = entry.getValue();
                 complete = complete + key + " " + (String)value + "\n";
             }
