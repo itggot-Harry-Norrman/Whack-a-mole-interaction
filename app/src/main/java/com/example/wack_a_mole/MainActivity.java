@@ -3,6 +3,7 @@ package com.example.wack_a_mole;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -65,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(R.drawable.cloudstrimmed)
                 .into(gifImageView3);
+
+    }
+
+    private void clearScoreBoard(SharedPreferences prefs) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
 
     }
 

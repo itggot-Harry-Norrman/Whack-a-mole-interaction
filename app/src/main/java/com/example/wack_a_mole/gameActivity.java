@@ -85,7 +85,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             abMode = extras.getBoolean("mode");
         }
         //starttime = System.currentTimeMillis();
-        gameLength = 30000;
+        gameLength = 2000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
@@ -238,15 +238,17 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 win.start();
                 AlertDialog.Builder builder = new AlertDialog.Builder(gameActivity.this);
                 builder.setTitle("Time is up!")
+                        .setCancelable(false)
                         .setMessage("Your score: " + scoreCounter + "\n" + "Save your score!")
                         .setView(inputField)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                addScore(inputField.getText().toString(), scoreCounter);
+                                String name = inputField.getText().toString();
+                                if (name.length() == 3) {
+                                    addScore(name, scoreCounter);
+                                }
                                 Intent intent = new Intent(gameActivity.this, scoreboardActivity.class);
                                 startActivity(intent);
-                                //restart();
-                                //onResume();
                             }
                         })
                         .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
@@ -285,7 +287,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         editor.apply();
 
     }
-    
+
     private void restart() {
         ImageView gifImageView2 = findViewById(R.id.molev);
         gifImageView2.setVisibility(View.INVISIBLE);
