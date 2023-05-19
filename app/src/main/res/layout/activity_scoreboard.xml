@@ -27,6 +27,17 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        app:srcCompat="@drawable/grass2" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="608dp"
+        android:layout_height="640dp"
+        android:layout_marginTop="-350dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7"
         app:srcCompat="@drawable/dirt" />
 
     <ImageView
