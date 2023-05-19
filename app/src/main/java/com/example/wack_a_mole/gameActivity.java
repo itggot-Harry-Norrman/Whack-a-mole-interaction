@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 
@@ -84,7 +85,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             abMode = extras.getBoolean("mode");
         }
         //starttime = System.currentTimeMillis();
-        gameLength = 5000;
+        gameLength = 30000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
@@ -275,12 +276,16 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
     private void addScore(String name, int score) {
         SharedPreferences prefs = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
        // TextView scoreboard = findViewById(R.id.scoreBoard);
+        Map<String,?> allEntries = prefs.getAll();
+        if (allEntries.containsKey(name)) {
+            name = name + Integer.toString(score);
+        }
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(name, Integer.toString(score));
         editor.apply();
 
     }
-
+    
     private void restart() {
         ImageView gifImageView2 = findViewById(R.id.molev);
         gifImageView2.setVisibility(View.INVISIBLE);
