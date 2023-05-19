@@ -57,7 +57,8 @@
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/molev" />
 
     <TextView
         android:id="@+id/highScore"
@@ -126,6 +127,21 @@
         app:layout_constraintVertical_bias="0.621"
         app:srcCompat="@drawable/molebig" />
 
+    <ImageButton
+        android:id="@+id/homebutton2"
+        android:layout_width="170dp"
+        android:layout_height="48dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/molev"
+        app:layout_constraintVertical_bias="0.9"
+        app:srcCompat="@drawable/homebutton" />
+
     <ImageView
         android:id="@+id/start_popup"
         android:layout_width="353dp"
@@ -136,6 +152,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

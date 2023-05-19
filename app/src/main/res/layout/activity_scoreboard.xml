@@ -64,4 +64,19 @@
         app:layout_constraintVertical_bias="0.689"
         app:srcCompat="@drawable/placehold" />
 
+    <ImageButton
+        android:id="@+id/homebutton"
+        android:layout_width="170dp"
+        android:layout_height="48dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreBoard"
+        app:layout_constraintVertical_bias="0.9"
+        app:srcCompat="@drawable/homebutton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

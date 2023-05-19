@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -46,6 +48,15 @@ public class scoreboardActivity extends AppCompatActivity {
         editor.putString("j", "1000");
         editor.apply();
         readScores();
+
+        ImageButton homebutton = findViewById(R.id.homebutton);
+        homebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(scoreboardActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     private void readScores() {
         Map<String,?> allEntries =  prefs.getAll();

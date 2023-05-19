@@ -26,6 +26,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -85,7 +86,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
             abMode = extras.getBoolean("mode");
         }
         //starttime = System.currentTimeMillis();
-        gameLength = 2000;
+        gameLength = 30000;
 
         moleView = findViewById(R.id.molev);
         popOut = MediaPlayer.create(this, R.raw.popout);
@@ -119,6 +120,15 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                 .load(R.drawable.molebig)
                 .into(gifImageView2);
         gifImageView2.setVisibility(View.INVISIBLE);
+
+        ImageButton homeButton = findViewById(R.id.homebutton2);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(gameActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
         
     }
 
