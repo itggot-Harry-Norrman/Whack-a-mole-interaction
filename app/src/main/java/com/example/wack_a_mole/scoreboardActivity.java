@@ -3,6 +3,7 @@ package com.example.wack_a_mole;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -75,5 +76,10 @@ public class scoreboardActivity extends AppCompatActivity {
         }
         scoreboard.setText(complete);
     }
-
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
 }
