@@ -65,7 +65,9 @@ public class scoreboardActivity extends AppCompatActivity {
                 i++;
                 String key = entry.getKey();
                 key = key.toUpperCase();
-
+                if(key.length() > 3) {
+                    key = key.substring(0,3);
+                }
                 Object value = entry.getValue();
                 complete = complete + key + " " + (String)value + "\n";
             }
