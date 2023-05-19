@@ -27,6 +27,8 @@ public class scoreboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide(); //hides top-menu
+
         setContentView(R.layout.activity_scoreboard);
         prefs = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
         scoreboard = findViewById(R.id.scoreBoard);
