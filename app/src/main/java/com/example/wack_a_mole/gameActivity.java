@@ -257,9 +257,7 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 String name = inputField.getText().toString();
-                                if (name.length() == 3) {
-                                    addScore(name, scoreCounter);
-                                }
+                                addScore(name, scoreCounter);
                                 Intent intent = new Intent(gameActivity.this, scoreboardActivity.class);
                                 startActivity(intent);
                             }
