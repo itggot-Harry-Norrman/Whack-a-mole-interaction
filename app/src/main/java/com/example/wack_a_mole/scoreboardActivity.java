@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -49,6 +50,13 @@ public class scoreboardActivity extends AppCompatActivity {
         editor.apply();
         readScores();
 
+        Button reset = findViewById(R.id.button);
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearScoreBoard(prefs);
+            }
+        });
         ImageButton homebutton = findViewById(R.id.homebutton);
         homebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +91,7 @@ public class scoreboardActivity extends AppCompatActivity {
                 Object value = entry.getValue();
                 complete = complete + key + " " + (String)value + "\n";
             }
-            i++;
+            i =11;
         }
         scoreboard.setText(complete);
     }
@@ -92,5 +100,11 @@ public class scoreboardActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
+    }
+    private void clearScoreBoard(SharedPreferences prefs) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
     }
 }
