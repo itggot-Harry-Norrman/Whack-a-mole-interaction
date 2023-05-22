@@ -36,16 +36,16 @@ public class scoreboardActivity extends AppCompatActivity {
         prefs = getSharedPreferences("my_preferences", Context.MODE_PRIVATE);
         scoreboard = findViewById(R.id.scoreBoard);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("a", "100");
-        editor.putString("b", "200");
-        editor.putString("c", "300");
-        editor.putString("d", "400");
-        editor.putString("e", "500");
-        editor.putString("f", "600");
-        editor.putString("g", "700");
-        editor.putString("h", "800");
-        editor.putString("i", "900");
-        editor.putString("j", "1000");
+        //editor.putString("a", "100");
+        //editor.putString("b", "200");
+        //editor.putString("c", "300");
+        //editor.putString("d", "400");
+        //editor.putString("e", "500");
+        //editor.putString("f", "600");
+        //editor.putString("g", "700");
+        //editor.putString("h", "800");
+        //editor.putString("i", "900");
+        //editor.putString("j", "1000");
         editor.apply();
         readScores();
 
