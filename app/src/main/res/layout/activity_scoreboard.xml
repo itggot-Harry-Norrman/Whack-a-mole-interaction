@@ -54,8 +54,8 @@
 
     <ImageView
         android:id="@+id/imageView10"
-        android:layout_width="403dp"
-        android:layout_height="210dp"
+        android:layout_width="331dp"
+        android:layout_height="134dp"
         app:layout_constraintBottom_toTopOf="@+id/scoreBoard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
