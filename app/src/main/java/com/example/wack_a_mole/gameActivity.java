@@ -83,7 +83,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         getSupportActionBar().hide(); //hides top-menu
         Bundle extras = getIntent().getExtras();
         if (extras != null){
-            abMode = extras.getBoolean("mode");
+            //abMode = extras.getBoolean("mode");
+            abMode = false;
         }
         //starttime = System.currentTimeMillis();
         gameLength = 30000;
@@ -102,6 +103,8 @@ public class gameActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_game);
         deg = findViewById(R.id.deg);
         moleTxt = findViewById(R.id.moleDeg);
+        moleTxt.setVisibility(View.INVISIBLE);
+        deg.setVisibility(View.INVISIBLE);
         highScore = findViewById(R.id.highScore);
         timeView = findViewById(R.id.timer);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
